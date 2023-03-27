@@ -9,10 +9,14 @@ type svg_shape = {
 let shapes:svg_shape[] =[];
 
 const loader = new SVGLoader();
-loader.load("./propeller.svg", function(data){
+try{
+loader.load("/propeller.svg", function(data){
     data.paths.map((shp) => shapes.push({shape:SVGLoader.createShapes(shp)[0],color:shp.color }))
-})
+})}
+catch (err) {
+    console.error("Error loading SVG:", err);}
 
+    
 const extrudeSettings = { depth: 70, bevelEnabled: true, bevelSegments: 9, steps: 2, bevelSize: 1, bevelThickness: 1 };
 
 const Drone = () => {
