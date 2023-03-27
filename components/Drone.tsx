@@ -2,16 +2,14 @@ import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 import { Shape } from "three";
 import { Color } from "three";
 
-
 type svg_shape = {
     shape:Shape;
     color:Color;
 }
 let shapes:svg_shape[] =[];
-const ur:string = "propeller.svg";
 
 const loader = new SVGLoader();
-loader.load(ur, function(data){
+loader.load("./propeller.svg", function(data){
     data.paths.map((shp) => shapes.push({shape:SVGLoader.createShapes(shp)[0],color:shp.color }))
 })
 
