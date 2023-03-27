@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import h from "../styles/home.module.css";
+import h from "../styles/Home.module.css";
 import Drone from './Drone';
 
 const CameraController = () => {
