@@ -8,9 +8,10 @@ type svg_shape = {
     color:Color;
 }
 let shapes:svg_shape[] =[];
+const ur:string = "propeller.svg";
 
 const loader = new SVGLoader();
-loader.load("/propeller.svg", function(data){
+loader.load(ur, function(data){
     data.paths.map((shp) => shapes.push({shape:SVGLoader.createShapes(shp)[0],color:shp.color }))
 })
 
