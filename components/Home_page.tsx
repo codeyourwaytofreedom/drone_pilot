@@ -20,7 +20,6 @@ const CameraController = () => {
     return null;
   };
 
-
 const Home_page = () => {
     return ( 
         <div className={h.home}>
