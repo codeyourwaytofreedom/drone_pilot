@@ -13,7 +13,7 @@ type svg_shape = {
     color:Color;
 }
 
-const extrudeSettings = { depth: 5, bevelEnabled: true, bevelSegments: 9, steps: 2, bevelSize: 1, bevelThickness: 1 };
+const extrudeSettings = { depth: 8, bevelEnabled: true, bevelSegments: 9, steps: 2, bevelSize: 1, bevelThickness: 1 };
 const extrudeSettings_Body = { depth: 25, bevelEnabled: true, bevelSegments: 9, steps: 9, bevelSize: 1, bevelThickness: 5 };
 
 const full_circle = 3.141;
@@ -58,7 +58,7 @@ const Drone = () => {
     const propeller3 = useRef<Group>(null);
     const propeller4 = useRef<Group>(null);
 
-    const texture = useLoader(TextureLoader, '/cam.jpg');
+    const texture = useLoader(TextureLoader, '/cam1.jpg');
     texture.wrapS = RepeatWrapping
     texture.wrapT = RepeatWrapping
     texture.repeat.set(0.01,0.01)
@@ -86,15 +86,36 @@ const Drone = () => {
             </mesh> 
 
 
-
-            <mesh>
-                <boxGeometry args={[0.7,1,2]}/>
-                <meshBasicMaterial color={"navy"}/>
-            </mesh>
+            <group position={[0,0,-0.6]} rotation={[0,0,1]}>
+                <mesh rotation={[0,1.55,0]}>
+                    <boxGeometry args={[0.3,0.3,6.5]}/>
+                    <meshBasicMaterial color={"white"}/>
+                </mesh> 
+                
+                {/* axis */}
+                <mesh position={[-3.3,0,-0.06]}>
+                    <boxGeometry args={[0.5,1,0.3]}/>
+                    <meshBasicMaterial color={"black"}/>
+                </mesh> 
+                <mesh position={[-3.3,0,-0.06]}>
+                    <cylinderGeometry args={[0.3,0.3,0.3]}/>
+                    <meshBasicMaterial color={"black"}/>
+                </mesh> 
+                
+                {/* axis */}
+                <mesh position={[3.3,0,0.06]}>
+                    <boxGeometry args={[0.5,1,0.3]}/>
+                    <meshBasicMaterial color={"black"}/>
+                </mesh> 
+                <mesh position={[3.3,0,0.06]}>
+                    <cylinderGeometry args={[0.3,0.3,0.3]}/>
+                    <meshBasicMaterial color={"black"}/>
+                </mesh> 
+            </group>
 
 
             <group rotation={[0,0,full_circle/2]} position={[0,0,-0.5]}>
-            <mesh scale={new Vector3(body_scale,body_scale*1.5,body_scale)} position={[-1.3,-0.70,-0.5]}>
+            <mesh scale={new Vector3(body_scale*1.2,body_scale*1.9,body_scale)} position={[-1.45,-0.90,-0.5]}>
                 <extrudeGeometry args={[ufoShape,extrudeSettings_Body]}/>
                 <meshBasicMaterial color={"gray"} map={texture}/>
             </mesh> 
