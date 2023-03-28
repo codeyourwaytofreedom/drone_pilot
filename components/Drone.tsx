@@ -8,14 +8,15 @@ type svg_shape = {
     color:Color;
 }
 
-const extrudeSettings = { depth: 70, bevelEnabled: true, bevelSegments: 9, steps: 2, bevelSize: 1, bevelThickness: 1 };
+const extrudeSettings = { depth: 10, bevelEnabled: true, bevelSegments: 9, steps: 2, bevelSize: 1, bevelThickness: 1 };
 
 const Drone = () => {
     const [shapes, setShapes] = useState<svg_shape[]>([]);
-    
+    const [excluded,setExcluded] = useState<number[]>([]);
+
     useEffect(() => {
         const loader = new SVGLoader();
-        loader.load("/propeller.svg", function(data){
+        loader.load("/p2.svg", function(data){
             const newShapes = data.paths.map((shp) => ({shape:SVGLoader.createShapes(shp)[0],color:shp.color }));
             setShapes(newShapes);
         });
@@ -27,8 +28,8 @@ const Drone = () => {
                 <boxGeometry args={[0.2,0.2,0.2]}/>
                 <meshBasicMaterial color={"black"}/>
             </mesh> 
-            {shapes.map((s,i) =>
-                <mesh key={i} scale={0.002}>
+            {shapes.map((s,i) => !excluded.includes(i) &&
+                <mesh key={i} scale={0.005} onClick={()=> setExcluded([...excluded, i])}>
                     <extrudeGeometry args={[s.shape,extrudeSettings]} />
                     <meshBasicMaterial color={s.color}/>
                 </mesh>
