@@ -24,8 +24,9 @@ const propeller_pos = Math.PI/1.7;
 const center_color = "#D2691E";
 const pole_color = "black";
 const propeller_color = "#1E90FF"
-const angle_change = 0.02;
-
+const angle_change = 0.05;
+const max_forward_angle = -2;
+const max_backward_angle = -0.8
 
 const drone_shape =  new THREE.Shape()
     .moveTo(0, 20)
@@ -51,24 +52,46 @@ const Drone = () => {
         });
     }, []);
 
+    let arrowUpPressed = false;
+    let arrowRightPressed = false;
+
     useEffect(()=> {
         const handleKeyDown = (event:any) => {
-            console.log(event.key);
+            if (event.code === 'ArrowUp') {
+                arrowUpPressed = true;
+              } else if (event.code === 'ArrowRight') {
+                arrowRightPressed = true;
+              }
+            if (arrowUpPressed && arrowRightPressed) {
+                console.log("double keys pressed");
+              }
+
             if(event.key === "ArrowUp"){
-                if(drone_rotation > -2)
+                if(drone_rotationFB > max_forward_angle)
                 {
-                    setRot(drone_rotation-angle_change)
+                    setRot_FB(drone_rotationFB-angle_change)
                 }
                 else{return null}
             }
             if(event.key === "ArrowDown"){
-                if(drone_rotation < -0.8)
+                if(drone_rotationFB < max_backward_angle)
                 {
-                    setRot(drone_rotation+angle_change)
+                    setRot_FB(drone_rotationFB+angle_change)
                 }
                 else{return null}
             }
-            console.log(drone_rotation)
+            if(event.key === "ArrowRight"){
+                if(drone_rotationRL < 0.5){
+                    setRot_RL(drone_rotationRL+angle_change)
+                }
+                else{return null}
+            }
+            if(event.key === "ArrowLeft"){
+                if(drone_rotationRL > -0.5){
+                    setRot_RL(drone_rotationRL-angle_change)
+                }
+                else{return null}
+            }
         }
         document.addEventListener('keydown', handleKeyDown);
         return () => {
@@ -77,7 +100,8 @@ const Drone = () => {
     });
     
     
-    const [drone_rotation, setRot] = useState<number>(-1.4)
+    const [drone_rotationFB, setRot_FB] = useState<number>(-1.4)
+    const [drone_rotationRL, setRot_RL] = useState<number>(0)
     const [shapes, setShapes] = useState<svg_shape[]>([]);
     const[body,setBody] = useState<svg_shape[]>([]);
     const [excluded,setExcluded] = useState<number[]>([0,3]);
@@ -114,7 +138,7 @@ const Drone = () => {
 
     return ( 
         <>
-        <group rotation={[drone_rotation,0,0]}>
+        <group rotation={[drone_rotationFB,drone_rotationRL,0]}>
             {/* center anchor */}
             <mesh>
                 <boxGeometry args={[0.2,0.2,2]}/>
