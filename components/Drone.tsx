@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { KeyboardEvent, ReactEventHandler, useEffect, useRef, useState } from 'react';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 import { Group, InstancedMesh, Shape, Vector3 } from "three";
 import { Color } from "three";
@@ -17,17 +17,17 @@ const extrudeSettings = { depth: 8, bevelEnabled: true, bevelSegments: 9, steps:
 const extrudeSettings_Body = { depth: 25, bevelEnabled: true, bevelSegments: 9, steps: 9, bevelSize: 1, bevelThickness: 5 };
 
 const full_circle = 3.141;
-const rotation_speed = 0.9;
+const rotation_speed = 1;
 const propeller_scale = 0.005;
 const body_scale = 0.025;
 const propeller_pos = Math.PI/1.7;
-const center_color = "magenta";
+const center_color = "#D2691E";
 const pole_color = "black";
-const propeller_color = "yellow"
+const propeller_color = "#1E90FF"
+const angle_change = 0.02;
 
 
-
-const ufoShape =  new THREE.Shape()
+const drone_shape =  new THREE.Shape()
     .moveTo(0, 20)
     .quadraticCurveTo(0, 0, 20, 0)
     .lineTo(80, 0)
@@ -35,7 +35,6 @@ const ufoShape =  new THREE.Shape()
     .quadraticCurveTo(100, 40, 80, 40)
     .lineTo(20, 40)
     .quadraticCurveTo(0, 40, 0, 20);
-
 
 
 const Drone = () => {
@@ -52,6 +51,33 @@ const Drone = () => {
         });
     }, []);
 
+    useEffect(()=> {
+        const handleKeyDown = (event:any) => {
+            console.log(event.key);
+            if(event.key === "ArrowUp"){
+                if(drone_rotation > -2)
+                {
+                    setRot(drone_rotation-angle_change)
+                }
+                else{return null}
+            }
+            if(event.key === "ArrowDown"){
+                if(drone_rotation < -0.8)
+                {
+                    setRot(drone_rotation+angle_change)
+                }
+                else{return null}
+            }
+            console.log(drone_rotation)
+        }
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    });
+    
+    
+    const [drone_rotation, setRot] = useState<number>(-1.4)
     const [shapes, setShapes] = useState<svg_shape[]>([]);
     const[body,setBody] = useState<svg_shape[]>([]);
     const [excluded,setExcluded] = useState<number[]>([0,3]);
@@ -70,7 +96,7 @@ const Drone = () => {
     p.wrapS = RepeatWrapping;
     p.repeat.set(0.3,0.3)
 
-    useFrame(()=>{
+/*     useFrame(()=>{
         if(propeller1.current){
             propeller1.current.rotation.z -= rotation_speed;
         }        
@@ -84,11 +110,11 @@ const Drone = () => {
         if(propeller2.current){
             propeller2.current.rotation.z += rotation_speed;
         }
-
-    })
+    }) */
 
     return ( 
         <>
+        <group rotation={[drone_rotation,0,0]}>
             {/* center anchor */}
             <mesh>
                 <boxGeometry args={[0.2,0.2,2]}/>
@@ -176,12 +202,12 @@ const Drone = () => {
             {/* drone body */}
             <group rotation={[0,0,full_circle/2]} position={[0,0,-0.5]}>
                 <mesh scale={new Vector3(body_scale*1.2,body_scale*1.9,body_scale)} position={[-1.45,-0.90,-0.5]}>
-                    <extrudeGeometry args={[ufoShape,extrudeSettings_Body]}/>
+                    <extrudeGeometry args={[drone_shape,extrudeSettings_Body]}/>
                     <meshBasicMaterial color={"gray"} map={texture}/>
                 </mesh> 
             </group>
 
-            {/* propeller1 */}
+            {/* propeller Top Left */}
             <group ref={propeller1} position={[-2.3,2.38,0.11]} rotation={[0,0,propeller_pos]}>
 {/*                 <mesh>
                     <boxGeometry args={[0.01,0.01,0.5]}/>
@@ -197,7 +223,7 @@ const Drone = () => {
                 </group>
             </group>
 
-            {/* propeller4 */}
+            {/* propeller Bottom Right */}
             <group ref={propeller4} position={[2.3,-2.36,0.11]} rotation={[0,0,propeller_pos]}>
 {/*                 <mesh>
                     <boxGeometry args={[0.01,0.01,0.5]}/>
@@ -213,7 +239,7 @@ const Drone = () => {
                 </group>
             </group>
 
-            {/* propeller3 */}
+            {/* propeller Top Right */}
             <group ref={propeller3} position={[2.3,2.38,0.11]} rotation={[0,0,propeller_pos]}>
 {/*                 <mesh>
                     <boxGeometry args={[0.01,0.01,0.5]}/>
@@ -229,8 +255,7 @@ const Drone = () => {
                 </group>
             </group>
 
-
-            {/* propeller2 */}
+            {/* propeller Bottom Left */}
             <group ref={propeller2} position={[-2.3,-2.36,0.11]} rotation={[0,0,propeller_pos]}>
 {/*                 <mesh>
                     <boxGeometry args={[0.01,0.01,0.5]}/>
@@ -245,6 +270,7 @@ const Drone = () => {
                     )}
                 </group>
             </group>
+        </group>
         </>
      );
 }
