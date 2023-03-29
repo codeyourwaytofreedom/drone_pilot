@@ -1,0 +1,60 @@
+            {/* propellers */}
+            <group ref={propeller1} position={[-2,2,0]} rotation={[0,0,propeller_pos]}>
+{/*                 <mesh>
+                    <boxGeometry args={[0.2,0.2,0.2]}/>
+                    <meshBasicMaterial color={"red"}/>
+                </mesh>  */}
+                <group position={[-0.45,-1,0]}>
+                    {shapes.map((s,i) => !excluded.includes(i) &&
+                        <mesh key={i} scale={propeller_scale} onClick={()=> setExcluded([...excluded, i])}>
+                            <extrudeGeometry args={[s.shape,extrudeSettings]} />
+                            <meshBasicMaterial color={i==4 ? center_color : i===2 ? center_color : s.color}/>
+                        </mesh>
+                    )}
+                </group>
+            </group>
+
+            <group ref={propeller3} position={[2,-2,0]} rotation={[0,0,propeller_pos]}>
+{/*                 <mesh>
+                    <boxGeometry args={[0.2,0.2,0.2]}/>
+                    <meshBasicMaterial color={"red"}/>
+                </mesh>  */}
+                <group position={[-0.45,-1,0]}>
+                    {shapes.map((s,i) => !excluded.includes(i) &&
+                        <mesh key={i} scale={propeller_scale} onClick={()=> setExcluded([...excluded, i])}>
+                            <extrudeGeometry args={[s.shape,extrudeSettings]} />
+                            <meshBasicMaterial color={i==4 ? center_color : i===2 ? center_color : s.color}/>
+                        </mesh>
+                    )}
+                </group>
+            </group>
+
+            <group ref={propeller2} position={[2,2,0]} rotation={[0,0,-propeller_pos]}>
+{/*                 <mesh>
+                    <boxGeometry args={[0.2,0.2,0.2]}/>
+                    <meshBasicMaterial color={"yellow"}/>
+                </mesh>  */}
+                <group position={[-0.45,-1,0]}>
+                    {shapes.map((s,i) => !excluded.includes(i) &&
+                        <mesh key={i} scale={propeller_scale} onClick={()=> setExcluded([...excluded, i])}>
+                            <extrudeGeometry args={[s.shape,extrudeSettings]} />
+                            <meshBasicMaterial color={i==4 ? center_color : i===2 ? center_color : s.color}/>
+                        </mesh>
+                    )}
+                </group>
+            </group>
+
+            <group ref={propeller4} position={[-2,-2,0]} rotation={[0,0,-propeller_pos]}>
+{/*                 <mesh>
+                    <boxGeometry args={[0.2,0.2,0.2]}/>
+                    <meshBasicMaterial color={"yellow"}/>
+                </mesh>  */}
+                <group position={[-0.45,-1,0]}>
+                    {shapes.map((s,i) => !excluded.includes(i) &&
+                        <mesh key={i} scale={propeller_scale} onClick={()=> setExcluded([...excluded, i])}>
+                            <extrudeGeometry args={[s.shape,extrudeSettings]} />
+                            <meshBasicMaterial color={i==4 ? center_color : i===2 ? center_color : s.color}/>
+                        </mesh>
+                    )}
+                </group>
+            </group>

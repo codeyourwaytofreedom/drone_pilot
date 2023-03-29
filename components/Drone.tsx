@@ -62,6 +62,11 @@ const Drone = () => {
     texture.wrapS = RepeatWrapping
     texture.wrapT = RepeatWrapping
     texture.repeat.set(0.01,0.01)
+
+    const p = useLoader(TextureLoader, "cam1.jpg");
+    p.wrapT = RepeatWrapping;
+    p.wrapS = RepeatWrapping;
+    p.repeat.set(0.3,0.3)
 /*     useFrame(()=>{
         if(propeller1.current){
             propeller1.current.rotation.z -= rotation_speed;
@@ -85,104 +90,89 @@ const Drone = () => {
                 <meshBasicMaterial color={"blue"}/>
             </mesh> 
 
-
+            {/* full axis one */}
             <group position={[0,0,-0.6]} rotation={[0,0,1]}>
+                {/* axis */}
                 <mesh rotation={[0,1.55,0]}>
                     <boxGeometry args={[0.3,0.3,6.5]}/>
-                    <meshBasicMaterial color={"white"}/>
-                </mesh> 
-                
-                {/* axis */}
-                <mesh position={[-3.3,0,-0.06]}>
-                    <boxGeometry args={[0.5,1,0.3]}/>
-                    <meshBasicMaterial color={"black"}/>
-                </mesh> 
-                <mesh position={[-3.3,0,-0.06]}>
-                    <cylinderGeometry args={[0.3,0.3,0.3]}/>
                     <meshBasicMaterial color={"black"}/>
                 </mesh> 
                 
-                {/* axis */}
+                {/* pole */}
+                <mesh position={[-3.3,0,-0.06]}>
+                    <boxGeometry args={[0.3,1,0.3]}/>
+                    <meshBasicMaterial color={"black"}/>
+                </mesh> 
+                <mesh position={[-3.3,0,-0.06]}>
+                    <cylinderGeometry args={[0.3,0.3,0.35]}/>
+                    <meshBasicMaterial color={"gray"} map={p}/>
+                </mesh> 
+                
+                {/* pole */}
                 <mesh position={[3.3,0,0.06]}>
                     <boxGeometry args={[0.5,1,0.3]}/>
                     <meshBasicMaterial color={"black"}/>
                 </mesh> 
                 <mesh position={[3.3,0,0.06]}>
                     <cylinderGeometry args={[0.3,0.3,0.3]}/>
-                    <meshBasicMaterial color={"black"}/>
+                    <meshBasicMaterial color={"gray"} map={p}/>
                 </mesh> 
+
+                {/* propeller holder */}
+                <mesh position={[-3.3,0,0.4]} rotation={[full_circle/2,0,0]}>
+                    <cylinderGeometry args={[0.05,0.1,0.7]} />
+                    <meshBasicMaterial color={"black"} />
+                </mesh>
+                <mesh position={[3.3,0,0.4]} rotation={[full_circle/2,0,0]}>
+                    <cylinderGeometry args={[0.05,0.1,0.7]} />
+                    <meshBasicMaterial color={"black"} />
+                </mesh>
             </group>
 
+            {/* full axis two */}
+            <group position={[0,0,-0.6]} rotation={[0,0,-1]}>
+                {/* axis */}
+                <mesh rotation={[0,1.55,0]}>
+                    <boxGeometry args={[0.3,0.3,6.5]}/>
+                    <meshBasicMaterial color={"black"}/>
+                </mesh> 
+                
+                {/* pole */}
+                <mesh position={[-3.3,0,-0.06]}>
+                    <boxGeometry args={[0.3,1,0.3]}/>
+                    <meshBasicMaterial color={"black"}/>
+                </mesh> 
+                <mesh position={[-3.3,0,-0.06]}>
+                    <cylinderGeometry args={[0.3,0.3,0.35]}/>
+                    <meshBasicMaterial color={"gray"} map={p}/>
+                </mesh> 
+                
+                {/* pole */}
+                <mesh position={[3.3,0,0.06]}>
+                    <boxGeometry args={[0.5,1,0.3]}/>
+                    <meshBasicMaterial color={"black"}/>
+                </mesh> 
+                <mesh position={[3.3,0,0.06]}>
+                    <cylinderGeometry args={[0.3,0.3,0.3]}/>
+                    <meshBasicMaterial color={"gray"} map={p}/>
+                </mesh> 
+
+                {/* propeller holder */}
+                <mesh position={[-3.3,0,0.4]} rotation={[full_circle/2,0,0]}>
+                    <cylinderGeometry args={[0.05,0.1,0.7]} />
+                    <meshBasicMaterial color={"black"} />
+                </mesh>
+                <mesh position={[3.3,0,0.4]} rotation={[full_circle/2,0,0]}>
+                    <cylinderGeometry args={[0.05,0.1,0.7]} />
+                    <meshBasicMaterial color={"black"} />
+                </mesh>
+            </group>
 
             <group rotation={[0,0,full_circle/2]} position={[0,0,-0.5]}>
-            <mesh scale={new Vector3(body_scale*1.2,body_scale*1.9,body_scale)} position={[-1.45,-0.90,-0.5]}>
-                <extrudeGeometry args={[ufoShape,extrudeSettings_Body]}/>
-                <meshBasicMaterial color={"gray"} map={texture}/>
-            </mesh> 
-            </group>
-
-
-
-
-            {/* propellers */}
-            <group ref={propeller1} position={[-2,2,0]} rotation={[0,0,propeller_pos]}>
-{/*                 <mesh>
-                    <boxGeometry args={[0.2,0.2,0.2]}/>
-                    <meshBasicMaterial color={"red"}/>
-                </mesh>  */}
-                <group position={[-0.45,-1,0]}>
-                    {shapes.map((s,i) => !excluded.includes(i) &&
-                        <mesh key={i} scale={propeller_scale} onClick={()=> setExcluded([...excluded, i])}>
-                            <extrudeGeometry args={[s.shape,extrudeSettings]} />
-                            <meshBasicMaterial color={i==4 ? center_color : i===2 ? center_color : s.color}/>
-                        </mesh>
-                    )}
-                </group>
-            </group>
-
-            <group ref={propeller3} position={[2,-2,0]} rotation={[0,0,propeller_pos]}>
-{/*                 <mesh>
-                    <boxGeometry args={[0.2,0.2,0.2]}/>
-                    <meshBasicMaterial color={"red"}/>
-                </mesh>  */}
-                <group position={[-0.45,-1,0]}>
-                    {shapes.map((s,i) => !excluded.includes(i) &&
-                        <mesh key={i} scale={propeller_scale} onClick={()=> setExcluded([...excluded, i])}>
-                            <extrudeGeometry args={[s.shape,extrudeSettings]} />
-                            <meshBasicMaterial color={i==4 ? center_color : i===2 ? center_color : s.color}/>
-                        </mesh>
-                    )}
-                </group>
-            </group>
-
-            <group ref={propeller2} position={[2,2,0]} rotation={[0,0,-propeller_pos]}>
-{/*                 <mesh>
-                    <boxGeometry args={[0.2,0.2,0.2]}/>
-                    <meshBasicMaterial color={"yellow"}/>
-                </mesh>  */}
-                <group position={[-0.45,-1,0]}>
-                    {shapes.map((s,i) => !excluded.includes(i) &&
-                        <mesh key={i} scale={propeller_scale} onClick={()=> setExcluded([...excluded, i])}>
-                            <extrudeGeometry args={[s.shape,extrudeSettings]} />
-                            <meshBasicMaterial color={i==4 ? center_color : i===2 ? center_color : s.color}/>
-                        </mesh>
-                    )}
-                </group>
-            </group>
-
-            <group ref={propeller4} position={[-2,-2,0]} rotation={[0,0,-propeller_pos]}>
-{/*                 <mesh>
-                    <boxGeometry args={[0.2,0.2,0.2]}/>
-                    <meshBasicMaterial color={"yellow"}/>
-                </mesh>  */}
-                <group position={[-0.45,-1,0]}>
-                    {shapes.map((s,i) => !excluded.includes(i) &&
-                        <mesh key={i} scale={propeller_scale} onClick={()=> setExcluded([...excluded, i])}>
-                            <extrudeGeometry args={[s.shape,extrudeSettings]} />
-                            <meshBasicMaterial color={i==4 ? center_color : i===2 ? center_color : s.color}/>
-                        </mesh>
-                    )}
-                </group>
+                <mesh scale={new Vector3(body_scale*1.2,body_scale*1.9,body_scale)} position={[-1.45,-0.90,-0.5]}>
+                    <extrudeGeometry args={[ufoShape,extrudeSettings_Body]}/>
+                    <meshBasicMaterial color={"gray"} map={texture}/>
+                </mesh> 
             </group>
 
         </>
