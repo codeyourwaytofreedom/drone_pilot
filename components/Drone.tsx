@@ -7,6 +7,7 @@ import * as THREE from "three";
 import { useLoader } from '@react-three/fiber'
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 import { RepeatWrapping } from 'three'
+import { setInterval } from 'timers';
 
 type svg_shape = {
     shape:Shape;
@@ -25,8 +26,10 @@ const center_color = "#D2691E";
 const pole_color = "black";
 const propeller_color = "#1E90FF"
 const angle_change = 0.05;
-const max_forward_angle = -2;
-const max_backward_angle = -0.8
+const max_angle_UP = -2;
+const min_angle_UD = -0.8;
+const max_angle_RL = 1;
+const min_angle_RL = -1;
 
 const drone_shape =  new THREE.Shape()
     .moveTo(0, 20)
@@ -52,101 +55,45 @@ const Drone = () => {
         });
     }, []);
 
-    let arrowUpPressed = false;
-    let arrowDownPressed = false;
-    let arrowRightPressed = false;
-    let arrowLeftPressed = false;
+    useEffect(() => {
+    // Keep track of which keys are currently pressed down
+    const keysDown: { [key: string]: boolean } = {};
 
-    useEffect(()=> {
-        const handleKeyDown = (event:any) => {
-            if(event.key === "ArrowUp"){
-                arrowUpPressed = true;
-            }
-            if(event.key === "ArrowDown"){
-                arrowDownPressed = true;
-            }
-            if(event.key === "ArrowRight"){
-                arrowRightPressed = true;
-            }
-            if(event.key === "ArrowLeft"){
-                arrowLeftPressed = true;
-            }
-        }
+    const handleKeyDown = (e:any) => {
+        keysDown[e.key] = true;
 
-        const handleKeyUp = (event:any) => {
-            if(event.key === "ArrowUp"){
-                arrowUpPressed = false;
-            }
-            if(event.key === "ArrowDown"){
-                arrowDownPressed = false;
-            }
-            if(event.key === "ArrowRight"){
-                arrowRightPressed = false;
-            }
-            if(event.key === "ArrowLeft"){
-                arrowLeftPressed = false;
-            }
-        }
+        // Check if both "ArrowUp" and "ArrowRight" keys are currently pressed down
+        if (keysDown["ArrowUp"] && keysDown["ArrowRight"]) {
+            console.log("UP and Right");
 
-        //Single Movements
-        const movementU = () => {
-            if(arrowUpPressed && !arrowRightPressed && !arrowLeftPressed)
-            {
-                console.log("only Up pressed")
-            }
-        }
-        const movementD = () => {
-            if(arrowDownPressed && !arrowRightPressed && !arrowLeftPressed)
-            {
-                console.log("only Down pressed")
-            }
-        }
+/*             setRot_RL(drone_rotationRL+0.05);
+            setRot_UD(drone_rotationUD+0.05); */
 
-        const movementUR = () => {
-            if(arrowUpPressed && arrowRightPressed){
-                console.log("Up and Right pressed simultaneously")
-            }
+            setRot_RL(prevRotationRL => prevRotationRL + 0.05);
+            setRot_UD(prevRotationUD => prevRotationUD + 0.05);         
+        } else if (e.key === "ArrowUp") {
+            console.log("UP");
+        } else if (e.key === "ArrowRight") {
+            console.log("Right");
         }
-        const movementUL = () => {
-            if(arrowUpPressed && arrowLeftPressed){
-                console.log("Up and Left pressed simultaneously")
-            }
-        }
-        const movementDR = () => {
-            if(arrowDownPressed && arrowRightPressed){
-                console.log("Down and Right pressed simultaneously")
-            }
-        }
-        const movementDL = () => {
-            if(arrowDownPressed && arrowLeftPressed){
-                console.log("Down and Left pressed simultaneously")
-            }
-        }
+    };
 
-        document.addEventListener('keydown', handleKeyDown);
-        document.addEventListener('keydown', movementUR);
-        document.addEventListener('keydown', movementUL);
-        document.addEventListener('keydown', movementDR);
-        document.addEventListener('keydown', movementDL);
-        document.addEventListener('keydown', movementU);
-        document.addEventListener('keydown', movementD);
+    const handleKeyUp = (e:any) => {
+        delete keysDown[e.key];
+    };
 
-        document.addEventListener('keyup', handleKeyUp);
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown);
-            document.removeEventListener('keydown', movementUR);
-            document.removeEventListener('keydown', movementUL);
-            document.removeEventListener('keydown', movementDR);
-            document.removeEventListener('keydown', movementDL);
-            document.removeEventListener('keydown', movementU);
-            document.removeEventListener('keydown', movementD);
+    // Add event listeners for keydown and keyup events
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
 
-            document.removeEventListener('keyup', handleKeyUp);
-        };
-    });
+    return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+        window.removeEventListener('keyup', handleKeyUp);
+    };
+    }, []);    
     
-    
-    const [drone_rotationFB, setRot_FB] = useState<number>(-1.4)
+
+    const [drone_rotationUD, setRot_UD] = useState<number>(-1.4)
     const [drone_rotationRL, setRot_RL] = useState<number>(0)
     const [shapes, setShapes] = useState<svg_shape[]>([]);
     const[body,setBody] = useState<svg_shape[]>([]);
@@ -184,7 +131,7 @@ const Drone = () => {
 
     return ( 
         <>
-        <group rotation={[drone_rotationFB,drone_rotationRL,0]}>
+        <group rotation={[drone_rotationUD,drone_rotationRL,0]}>
             {/* center anchor */}
             <mesh>
                 <boxGeometry args={[0.2,0.2,2]}/>
