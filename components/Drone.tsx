@@ -66,15 +66,30 @@ const Drone = () => {
 
         // Check if both "ArrowUp" and "ArrowRight" keys are currently pressed down
         if (keysDown["ArrowUp"] && keysDown["ArrowRight"]) {
-            console.log("UP and Right");
-            setRot_UD(prevRotationUD => prevRotationUD > -2 ? prevRotationUD - 0.05 : prevRotationUD);
-            setRot_RL(prevRotationRL => prevRotationRL < 1 ? prevRotationRL + 0.05 : prevRotationRL);
-            console.log(drone_rotationRL)
+            setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - 0.05 : prevRotationUD);
+            setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + 0.05 : prevRotationRL);
         } 
+        else if (keysDown["ArrowUp"] && keysDown["ArrowLeft"]) {
+            setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - 0.05 : prevRotationUD);
+            setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - 0.05 : prevRotationRL);
+        }
+        else if (keysDown["ArrowDown"] && keysDown["ArrowRight"]) {
+            setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + 0.05 : prevRotationUD);
+            setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + 0.05 : prevRotationRL);
+        } 
+        else if (keysDown["ArrowDown"] && keysDown["ArrowLeft"]) {
+            setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + 0.05 : prevRotationUD);
+            setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - 0.05 : prevRotationRL);
+        }
           else if (e.key === "ArrowUp") {
-            console.log("UP");
-        } else if (e.key === "ArrowRight") {
-            console.log("Right");
+            setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - 0.05 : prevRotationUD);
+        } else if (e.key === "ArrowDown") {
+            setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + 0.05 : prevRotationUD);
+        }
+        else if (e.key === "ArrowRight") {
+            setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + 0.05 : prevRotationRL);
+        } else if (e.key === "ArrowLeft") {
+            setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - 0.05 : prevRotationRL);
         }
     };
 
