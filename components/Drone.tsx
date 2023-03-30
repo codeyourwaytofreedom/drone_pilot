@@ -55,8 +55,9 @@ const Drone = () => {
         });
     }, []);
 
-    const [drone_rotationUD, setRot_UD] = useState<number>(-1.4)
-    const [drone_rotationRL, setRot_RL] = useState<number>(0)
+    const [drone_rotationUD, setRot_UD] = useState<number>(-1.4);
+    const [drone_rotationRL, setRot_RL] = useState<number>(0);
+    const [drone_positionX, setPositionX] = useState<number>(0);
 
     useEffect(() => {
     // Keep track of which keys are currently pressed down
@@ -64,32 +65,45 @@ const Drone = () => {
     const handleKeyDown = (e:any) => {
         keysDown[e.key] = true;
 
-        // Check if both "ArrowUp" and "ArrowRight" keys are currently pressed down
+        // Key combinations
         if (keysDown["ArrowUp"] && keysDown["ArrowRight"]) {
-            setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - 0.05 : prevRotationUD);
-            setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + 0.05 : prevRotationRL);
+            setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - angle_change: prevRotationUD);
+            setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + angle_change : prevRotationRL);
         } 
         else if (keysDown["ArrowUp"] && keysDown["ArrowLeft"]) {
-            setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - 0.05 : prevRotationUD);
-            setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - 0.05 : prevRotationRL);
+            setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - angle_change : prevRotationUD);
+            setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - angle_change : prevRotationRL);
         }
         else if (keysDown["ArrowDown"] && keysDown["ArrowRight"]) {
-            setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + 0.05 : prevRotationUD);
-            setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + 0.05 : prevRotationRL);
+            setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + angle_change: prevRotationUD);
+            setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + angle_change : prevRotationRL);
         } 
         else if (keysDown["ArrowDown"] && keysDown["ArrowLeft"]) {
-            setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + 0.05 : prevRotationUD);
-            setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - 0.05 : prevRotationRL);
+            setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + angle_change: prevRotationUD);
+            setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - angle_change : prevRotationRL);
         }
-          else if (e.key === "ArrowUp") {
-            setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - 0.05 : prevRotationUD);
-        } else if (e.key === "ArrowDown") {
-            setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + 0.05 : prevRotationUD);
+        else if (keysDown["ArrowUp"]) {
+            setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - angle_change : prevRotationUD);
+        } 
+        else if (keysDown["ArrowDown"]) {
+            setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + angle_change : prevRotationUD);
         }
-        else if (e.key === "ArrowRight") {
-            setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + 0.05 : prevRotationRL);
-        } else if (e.key === "ArrowLeft") {
-            setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - 0.05 : prevRotationRL);
+        else if (keysDown["ArrowRight"]) {
+            setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + angle_change : prevRotationRL);
+        } 
+        else if (keysDown["ArrowLeft"]) {
+            setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - angle_change : prevRotationRL);
+        } 
+
+
+        //X axis movement
+        else if(keysDown["a"]){
+            console.log("W pressed")
+            setPositionX(prevX => prevX-0.5);
+        }
+        else if(keysDown["d"]){
+            console.log("W pressed")
+            setPositionX(prevX => prevX+0.5);
         }
     };
 
@@ -145,7 +159,7 @@ const Drone = () => {
 
     return ( 
         <>
-        <group rotation={[drone_rotationUD,drone_rotationRL,0]}>
+        <group rotation={[drone_rotationUD,drone_rotationRL,0]} position={[drone_positionX,0,0]} scale={0.4}>
             {/* center anchor */}
             <mesh>
                 <boxGeometry args={[0.2,0.2,2]}/>
