@@ -1,6 +1,6 @@
-import { KeyboardEvent, ReactEventHandler, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
-import { Group, InstancedMesh, Shape, Vector3 } from "three";
+import { Group, Shape, Vector3 } from "three";
 import { Color } from "three";
 import { useFrame } from '@react-three/fiber';
 import * as THREE from "three";
@@ -53,49 +53,95 @@ const Drone = () => {
     }, []);
 
     let arrowUpPressed = false;
+    let arrowDownPressed = false;
     let arrowRightPressed = false;
+    let arrowLeftPressed = false;
 
     useEffect(()=> {
         const handleKeyDown = (event:any) => {
-            if (event.code === 'ArrowUp') {
-                arrowUpPressed = true;
-              } else if (event.code === 'ArrowRight') {
-                arrowRightPressed = true;
-              }
-            if (arrowUpPressed && arrowRightPressed) {
-                console.log("double keys pressed");
-              }
-
             if(event.key === "ArrowUp"){
-                if(drone_rotationFB > max_forward_angle)
-                {
-                    setRot_FB(drone_rotationFB-angle_change)
-                }
-                else{return null}
+                arrowUpPressed = true;
             }
             if(event.key === "ArrowDown"){
-                if(drone_rotationFB < max_backward_angle)
-                {
-                    setRot_FB(drone_rotationFB+angle_change)
-                }
-                else{return null}
+                arrowDownPressed = true;
             }
             if(event.key === "ArrowRight"){
-                if(drone_rotationRL < 0.5){
-                    setRot_RL(drone_rotationRL+angle_change)
-                }
-                else{return null}
+                arrowRightPressed = true;
             }
             if(event.key === "ArrowLeft"){
-                if(drone_rotationRL > -0.5){
-                    setRot_RL(drone_rotationRL-angle_change)
-                }
-                else{return null}
+                arrowLeftPressed = true;
             }
         }
+
+        const handleKeyUp = (event:any) => {
+            if(event.key === "ArrowUp"){
+                arrowUpPressed = false;
+            }
+            if(event.key === "ArrowDown"){
+                arrowDownPressed = false;
+            }
+            if(event.key === "ArrowRight"){
+                arrowRightPressed = false;
+            }
+            if(event.key === "ArrowLeft"){
+                arrowLeftPressed = false;
+            }
+        }
+
+        //Single Movements
+        const movementU = () => {
+            if(arrowUpPressed && !arrowRightPressed && !arrowLeftPressed)
+            {
+                console.log("only Up pressed")
+            }
+        }
+        const movementD = () => {
+            if(arrowDownPressed && !arrowRightPressed && !arrowLeftPressed)
+            {
+                console.log("only Down pressed")
+            }
+        }
+
+        const movementUR = () => {
+            if(arrowUpPressed && arrowRightPressed){
+                console.log("Up and Right pressed simultaneously")
+            }
+        }
+        const movementUL = () => {
+            if(arrowUpPressed && arrowLeftPressed){
+                console.log("Up and Left pressed simultaneously")
+            }
+        }
+        const movementDR = () => {
+            if(arrowDownPressed && arrowRightPressed){
+                console.log("Down and Right pressed simultaneously")
+            }
+        }
+        const movementDL = () => {
+            if(arrowDownPressed && arrowLeftPressed){
+                console.log("Down and Left pressed simultaneously")
+            }
+        }
+
         document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keydown', movementUR);
+        document.addEventListener('keydown', movementUL);
+        document.addEventListener('keydown', movementDR);
+        document.addEventListener('keydown', movementDL);
+        document.addEventListener('keydown', movementU);
+        document.addEventListener('keydown', movementD);
+
+        document.addEventListener('keyup', handleKeyUp);
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keydown', movementUR);
+            document.removeEventListener('keydown', movementUL);
+            document.removeEventListener('keydown', movementDR);
+            document.removeEventListener('keydown', movementDL);
+            document.removeEventListener('keydown', movementU);
+            document.removeEventListener('keydown', movementD);
+
+            document.removeEventListener('keyup', handleKeyUp);
         };
     });
     
