@@ -55,23 +55,23 @@ const Drone = () => {
         });
     }, []);
 
+    const [drone_rotationUD, setRot_UD] = useState<number>(-1.4)
+    const [drone_rotationRL, setRot_RL] = useState<number>(0)
+
     useEffect(() => {
     // Keep track of which keys are currently pressed down
     const keysDown: { [key: string]: boolean } = {};
-
     const handleKeyDown = (e:any) => {
         keysDown[e.key] = true;
 
         // Check if both "ArrowUp" and "ArrowRight" keys are currently pressed down
         if (keysDown["ArrowUp"] && keysDown["ArrowRight"]) {
             console.log("UP and Right");
-
-/*             setRot_RL(drone_rotationRL+0.05);
-            setRot_UD(drone_rotationUD+0.05); */
-
-            setRot_RL(prevRotationRL => prevRotationRL + 0.05);
-            setRot_UD(prevRotationUD => prevRotationUD + 0.05);         
-        } else if (e.key === "ArrowUp") {
+            setRot_UD(prevRotationUD => prevRotationUD > -2 ? prevRotationUD - 0.05 : prevRotationUD);
+            setRot_RL(prevRotationRL => prevRotationRL < 1 ? prevRotationRL + 0.05 : prevRotationRL);
+            console.log(drone_rotationRL)
+        } 
+          else if (e.key === "ArrowUp") {
             console.log("UP");
         } else if (e.key === "ArrowRight") {
             console.log("Right");
@@ -93,8 +93,7 @@ const Drone = () => {
     }, []);    
     
 
-    const [drone_rotationUD, setRot_UD] = useState<number>(-1.4)
-    const [drone_rotationRL, setRot_RL] = useState<number>(0)
+
     const [shapes, setShapes] = useState<svg_shape[]>([]);
     const[body,setBody] = useState<svg_shape[]>([]);
     const [excluded,setExcluded] = useState<number[]>([0,3]);
