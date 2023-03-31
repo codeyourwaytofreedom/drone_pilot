@@ -69,7 +69,18 @@ const Drone = () => {
     const moveLeft = () => setPositionX(prevX => prevX-distance_change);
     const moveRight = () => setPositionX(prevX => prevX+distance_change);
 
-    const moveUp = () => setPositionY(prevY => prevY+distance_change);
+    const moveUp = () => {
+        let i = 0;
+        const intervalId = setInterval(() => {
+          if (i >= 5) {
+            clearInterval(intervalId); // Stop the interval after firing 5 times
+            return;
+          }
+          setPositionY(prevY => prevY + distance_change/5);
+          i++;
+        }, 100); 
+    }
+    //setPositionY(prevY => prevY+distance_change);
     const moveDown = () => setPositionY(prevY => prevY-distance_change);
 
     useEffect(() => {
@@ -114,24 +125,8 @@ const Drone = () => {
             rotLeft();
             moves();
         } 
-
-        //X axis movements
-        else if(keysDown["a"]){
-            moveLeft();
-            if(keysDown["w"]){moveUp()}
-            if(keysDown["s"]){moveDown()}
-        }
-        else if(keysDown["d"]){
-            moveRight();
-            if(keysDown["w"]){moveUp()}
-            if(keysDown["s"]){moveDown()}
-        }
-        //Y axis movements
-        else if(keysDown["w"]){
-            moveUp();
-        }
-        else if(keysDown["s"]){
-            moveDown();
+        else{
+            moves()
         }
     };
 
@@ -189,10 +184,10 @@ const Drone = () => {
         <>
         <group rotation={[drone_rotationUD,drone_rotationRL,0]} position={[drone_positionX,drone_positionY,0]} scale={0.4}>
             {/* center anchor */}
-            <mesh>
+{/*             <mesh>
                 <boxGeometry args={[0.2,0.2,2]}/>
                 <meshBasicMaterial color={"blue"}/>
-            </mesh> 
+            </mesh>  */}
 
             {/* full axis one */}
             <group position={[0,0,-0.6]} rotation={[0,0,0.8]}>
