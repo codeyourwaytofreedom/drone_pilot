@@ -59,40 +59,44 @@ const Drone = () => {
     const [drone_rotationRL, setRot_RL] = useState<number>(0);
     const [drone_positionX, setPositionX] = useState<number>(0);
 
+    const rotUP = () => setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - angle_change: prevRotationUD);
+    const rotRight = () => setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + angle_change : prevRotationRL);
+    const rotLeft = () => setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - angle_change : prevRotationRL);
+    const rotDown = () => setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + angle_change: prevRotationUD);
+
     useEffect(() => {
     // Keep track of which keys are currently pressed down
     const keysDown: { [key: string]: boolean } = {};
     const handleKeyDown = (e:any) => {
         keysDown[e.key] = true;
-
         // Key combinations
         if (keysDown["ArrowUp"] && keysDown["ArrowRight"]) {
-            setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - angle_change: prevRotationUD);
-            setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + angle_change : prevRotationRL);
+            rotUP();
+            rotRight();
         } 
         else if (keysDown["ArrowUp"] && keysDown["ArrowLeft"]) {
-            setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - angle_change : prevRotationUD);
-            setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - angle_change : prevRotationRL);
+            rotUP();
+            rotLeft();
         }
         else if (keysDown["ArrowDown"] && keysDown["ArrowRight"]) {
-            setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + angle_change: prevRotationUD);
-            setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + angle_change : prevRotationRL);
+            rotDown();
+            rotRight();
         } 
         else if (keysDown["ArrowDown"] && keysDown["ArrowLeft"]) {
-            setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + angle_change: prevRotationUD);
-            setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - angle_change : prevRotationRL);
+            rotDown();
+            rotLeft();
         }
         else if (keysDown["ArrowUp"]) {
-            setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - angle_change : prevRotationUD);
+            rotUP();
         } 
         else if (keysDown["ArrowDown"]) {
-            setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + angle_change : prevRotationUD);
+            rotDown();
         }
         else if (keysDown["ArrowRight"]) {
-            setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + angle_change : prevRotationRL);
+            rotRight();
         } 
         else if (keysDown["ArrowLeft"]) {
-            setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - angle_change : prevRotationRL);
+            rotLeft();
         } 
 
 
