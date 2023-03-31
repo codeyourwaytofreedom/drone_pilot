@@ -26,6 +26,7 @@ const center_color = "#D2691E";
 const pole_color = "black";
 const propeller_color = "#1E90FF"
 const angle_change = 0.05;
+const distance_change = 0.1;
 const max_angle_UP = -2;
 const min_angle_UD = -0.8;
 const max_angle_RL = 1;
@@ -58,56 +59,79 @@ const Drone = () => {
     const [drone_rotationUD, setRot_UD] = useState<number>(-1.4);
     const [drone_rotationRL, setRot_RL] = useState<number>(0);
     const [drone_positionX, setPositionX] = useState<number>(0);
+    const [drone_positionY, setPositionY] = useState<number>(0);
 
     const rotUP = () => setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - angle_change: prevRotationUD);
     const rotRight = () => setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + angle_change : prevRotationRL);
     const rotLeft = () => setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - angle_change : prevRotationRL);
     const rotDown = () => setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + angle_change: prevRotationUD);
 
+    const moveLeft = () => setPositionX(prevX => prevX-distance_change);
+    const moveRight = () => setPositionX(prevX => prevX+distance_change);
+
+    const moveUp = () => setPositionY(prevY => prevY+distance_change);
+    const moveDown = () => setPositionY(prevY => prevY-distance_change);
+
     useEffect(() => {
     // Keep track of which keys are currently pressed down
     const keysDown: { [key: string]: boolean } = {};
     const handleKeyDown = (e:any) => {
         keysDown[e.key] = true;
-        // Key combinations
-        if (keysDown["ArrowUp"] && keysDown["ArrowRight"]) {
-            rotUP();
-            rotRight();
-        } 
-        else if (keysDown["ArrowUp"] && keysDown["ArrowLeft"]) {
-            rotUP();
-            rotLeft();
+        // Key combinations for rotations
+        const moves = () => {
+            if(keysDown["w"]){
+                moveUp();
+            }
+            if(keysDown["s"]){
+                moveDown();
+            }
+            if(keysDown["a"]){
+                moveLeft();
+            }
+            if(keysDown["d"]){
+                moveRight();
+            }
         }
-        else if (keysDown["ArrowDown"] && keysDown["ArrowRight"]) {
-            rotDown();
-            rotRight();
-        } 
-        else if (keysDown["ArrowDown"] && keysDown["ArrowLeft"]) {
-            rotDown();
-            rotLeft();
-        }
-        else if (keysDown["ArrowUp"]) {
+
+        if (keysDown["ArrowUp"]) {
             rotUP();
+            if(keysDown["ArrowRight"]){rotRight();}
+            if(keysDown["ArrowLeft"]){rotLeft();}
+            moves();
         } 
         else if (keysDown["ArrowDown"]) {
             rotDown();
-        }
+            if(keysDown["ArrowRight"]){rotRight();}
+            if(keysDown["ArrowLeft"]){rotLeft();}
+            moves();
+        } 
+
         else if (keysDown["ArrowRight"]) {
             rotRight();
+            moves();
         } 
         else if (keysDown["ArrowLeft"]) {
             rotLeft();
+            moves();
         } 
 
-
-        //X axis movement
+        //X axis movements
         else if(keysDown["a"]){
-            console.log("W pressed")
-            setPositionX(prevX => prevX-0.5);
+            moveLeft();
+            if(keysDown["w"]){moveUp()}
+            if(keysDown["s"]){moveDown()}
         }
         else if(keysDown["d"]){
-            console.log("W pressed")
-            setPositionX(prevX => prevX+0.5);
+            moveRight();
+            if(keysDown["w"]){moveUp()}
+            if(keysDown["s"]){moveDown()}
+        }
+        //Y axis movements
+        else if(keysDown["w"]){
+            moveUp();
+        }
+        else if(keysDown["s"]){
+            moveDown();
         }
     };
 
@@ -163,7 +187,7 @@ const Drone = () => {
 
     return ( 
         <>
-        <group rotation={[drone_rotationUD,drone_rotationRL,0]} position={[drone_positionX,0,0]} scale={0.4}>
+        <group rotation={[drone_rotationUD,drone_rotationRL,0]} position={[drone_positionX,drone_positionY,0]} scale={0.4}>
             {/* center anchor */}
             <mesh>
                 <boxGeometry args={[0.2,0.2,2]}/>
