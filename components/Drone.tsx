@@ -31,6 +31,7 @@ const max_angle_UP = -2;
 const min_angle_UD = -0.8;
 const max_angle_RL = 1;
 const min_angle_RL = -1;
+const smoothness = 50;
 
 const drone_shape =  new THREE.Shape()
     .moveTo(0, 20)
@@ -66,23 +67,53 @@ const Drone = () => {
     const rotLeft = () => setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - angle_change : prevRotationRL);
     const rotDown = () => setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + angle_change: prevRotationUD);
 
-    const moveLeft = () => setPositionX(prevX => prevX-distance_change);
-    const moveRight = () => setPositionX(prevX => prevX+distance_change);
-
-    const moveUp = () => {
+    const moveLeft = () => {
         let i = 0;
         const intervalId = setInterval(() => {
-          if (i >= 5) {
+          if (i >= smoothness) {
             clearInterval(intervalId); // Stop the interval after firing 5 times
             return;
           }
-          setPositionY(prevY => prevY + distance_change/5);
+          setPositionX(prevX => prevX-distance_change/smoothness);
           i++;
-        }, 100); 
+        }, 10); 
     }
-    //setPositionY(prevY => prevY+distance_change);
-    const moveDown = () => setPositionY(prevY => prevY-distance_change);
-
+    const moveRight = () => {
+        let i = 0;
+        const intervalId = setInterval(() => {
+          if (i >= smoothness) {
+            clearInterval(intervalId); // Stop the interval after firing 5 times
+            return;
+          }
+          setPositionX(prevX => prevX+distance_change/smoothness);
+          i++;
+        }, 10); 
+    }
+    
+    const moveUp = () => {
+        let i = 0;
+        const intervalId = setInterval(() => {
+          if (i >= smoothness) {
+            clearInterval(intervalId); // Stop the interval after firing 5 times
+            return;
+          }
+          setPositionY(prevY => prevY + distance_change/smoothness);
+          i++;
+        }, 10); 
+    }
+    const moveDown = () => {
+        let i = 0;
+        const intervalId = setInterval(() => {
+          if (i >= smoothness) {
+            clearInterval(intervalId); // Stop the interval after firing 5 times
+            return;
+          }
+          setPositionY(prevY => prevY-distance_change/smoothness);
+          i++;
+        }, 10); 
+    }
+    
+    
     useEffect(() => {
     // Keep track of which keys are currently pressed down
     const keysDown: { [key: string]: boolean } = {};
