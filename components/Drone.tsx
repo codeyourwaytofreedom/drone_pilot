@@ -26,12 +26,12 @@ const center_color = "#D2691E";
 const pole_color = "black";
 const propeller_color = "#1E90FF"
 const angle_change = 0.05;
-const distance_change = 0.1;
+const distance_change = 0.2;
 const max_angle_UP = -2;
 const min_angle_UD = -0.8;
 const max_angle_RL = 1;
 const min_angle_RL = -1;
-const smoothness = 50;
+const smoothness = 30;
 
 const drone_shape =  new THREE.Shape()
     .moveTo(0, 20)
@@ -62,16 +62,65 @@ const Drone = () => {
     const [drone_positionX, setPositionX] = useState<number>(0);
     const [drone_positionY, setPositionY] = useState<number>(0);
 
-    const rotUP = () => setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - angle_change: prevRotationUD);
-    const rotRight = () => setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + angle_change : prevRotationRL);
-    const rotLeft = () => setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - angle_change : prevRotationRL);
-    const rotDown = () => setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + angle_change: prevRotationUD);
+    const rotUP = () => {
+        let i = 0;
+        const interval_rot = setInterval(() => {
+            if(i>smoothness){
+                clearInterval(interval_rot);
+                return;
+            }
+            i++
+            setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - angle_change/smoothness: prevRotationUD);
+        },10)
+    }
+    
+    
+    
+    const rotRight = () => {
+        let i = 0;
+        const interval_rot = setInterval(() => {
+            if(i>smoothness){
+                clearInterval(interval_rot);
+                return;
+            }
+            i++
+            setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + angle_change/smoothness : prevRotationRL);
+        },10)
+    }
+    
+    
+    const rotLeft = () => {
+        let i = 0;
+        const interval_rot = setInterval(() => {
+            if(i>smoothness){
+                clearInterval(interval_rot);
+                return;
+            }
+            i++
+            setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - angle_change/smoothness: prevRotationRL);
+        },10)
+    }
+    
+    
+    const rotDown = () => {
+        let i = 0;
+        const interval_rot = setInterval(() => {
+            if(i>smoothness){
+                clearInterval(interval_rot);
+                return;
+            }
+            i++
+            setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + angle_change/smoothness : prevRotationUD);
+        },10)
+    }
+    
+    //setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + angle_change: prevRotationUD);
 
     const moveLeft = () => {
         let i = 0;
         const intervalId = setInterval(() => {
           if (i >= smoothness) {
-            clearInterval(intervalId); // Stop the interval after firing 5 times
+            clearInterval(intervalId); 
             return;
           }
           setPositionX(prevX => prevX-distance_change/smoothness);
@@ -82,7 +131,7 @@ const Drone = () => {
         let i = 0;
         const intervalId = setInterval(() => {
           if (i >= smoothness) {
-            clearInterval(intervalId); // Stop the interval after firing 5 times
+            clearInterval(intervalId);
             return;
           }
           setPositionX(prevX => prevX+distance_change/smoothness);
@@ -94,7 +143,7 @@ const Drone = () => {
         let i = 0;
         const intervalId = setInterval(() => {
           if (i >= smoothness) {
-            clearInterval(intervalId); // Stop the interval after firing 5 times
+            clearInterval(intervalId);
             return;
           }
           setPositionY(prevY => prevY + distance_change/smoothness);
@@ -105,7 +154,7 @@ const Drone = () => {
         let i = 0;
         const intervalId = setInterval(() => {
           if (i >= smoothness) {
-            clearInterval(intervalId); // Stop the interval after firing 5 times
+            clearInterval(intervalId);
             return;
           }
           setPositionY(prevY => prevY-distance_change/smoothness);
