@@ -8,6 +8,7 @@ import { useLoader } from '@react-three/fiber'
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 import { RepeatWrapping } from 'three'
 import { setInterval } from 'timers';
+import Bullet from './bullet';
 
 type svg_shape = {
     shape:Shape;
@@ -31,7 +32,7 @@ const max_angle_UP = -2;
 const min_angle_UD = -0.8;
 const max_angle_RL = 1;
 const min_angle_RL = -1;
-const smoothness = 30;
+const smoothness = 50;
 
 const drone_shape =  new THREE.Shape()
     .moveTo(0, 20)
@@ -73,9 +74,6 @@ const Drone = () => {
             setRot_UD(prevRotationUD => prevRotationUD > max_angle_UP ? prevRotationUD - angle_change/smoothness: prevRotationUD);
         },10)
     }
-    
-    
-    
     const rotRight = () => {
         let i = 0;
         const interval_rot = setInterval(() => {
@@ -87,8 +85,6 @@ const Drone = () => {
             setRot_RL(prevRotationRL => prevRotationRL < max_angle_RL ? prevRotationRL + angle_change/smoothness : prevRotationRL);
         },10)
     }
-    
-    
     const rotLeft = () => {
         let i = 0;
         const interval_rot = setInterval(() => {
@@ -100,8 +96,6 @@ const Drone = () => {
             setRot_RL(prevRotationRL => prevRotationRL > min_angle_RL ? prevRotationRL - angle_change/smoothness: prevRotationRL);
         },10)
     }
-    
-    
     const rotDown = () => {
         let i = 0;
         const interval_rot = setInterval(() => {
@@ -114,7 +108,6 @@ const Drone = () => {
         },10)
     }
     
-    //setRot_UD(prevRotationUD => prevRotationUD < min_angle_UD ? prevRotationUD + angle_change: prevRotationUD);
 
     const moveLeft = () => {
         let i = 0;
@@ -138,7 +131,6 @@ const Drone = () => {
           i++;
         }, 10); 
     }
-    
     const moveUp = () => {
         let i = 0;
         const intervalId = setInterval(() => {
@@ -196,7 +188,6 @@ const Drone = () => {
             if(keysDown["ArrowLeft"]){rotLeft();}
             moves();
         } 
-
         else if (keysDown["ArrowRight"]) {
             rotRight();
             moves();
@@ -262,13 +253,13 @@ const Drone = () => {
 
     return ( 
         <>
-        <group rotation={[drone_rotationUD,drone_rotationRL,0]} position={[drone_positionX,drone_positionY,0]} scale={0.4}>
+        <group rotation={[drone_rotationUD,drone_rotationRL,0]} position={[drone_positionX,drone_positionY,0]} scale={0.3}>
             {/* center anchor */}
 {/*             <mesh>
                 <boxGeometry args={[0.2,0.2,2]}/>
                 <meshBasicMaterial color={"blue"}/>
             </mesh>  */}
-
+            <Bullet />
             {/* full axis one */}
             <group position={[0,0,-0.6]} rotation={[0,0,0.8]}>
                 {/* axis */}
