@@ -253,13 +253,14 @@ const Drone = () => {
 
     return ( 
         <>
+        <Bullet drone_positionX={drone_positionX} drone_positionY={drone_positionY} drone_rotationUD={drone_rotationUD} />
         <group rotation={[drone_rotationUD,drone_rotationRL,0]} position={[drone_positionX,drone_positionY,0]} scale={0.3}>
             {/* center anchor */}
 {/*             <mesh>
                 <boxGeometry args={[0.2,0.2,2]}/>
                 <meshBasicMaterial color={"blue"}/>
             </mesh>  */}
-            <Bullet />
+            
             {/* full axis one */}
             <group position={[0,0,-0.6]} rotation={[0,0,0.8]}>
                 {/* axis */}
