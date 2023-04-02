@@ -62,6 +62,7 @@ const Drone = () => {
     const [drone_rotationRL, setRot_RL] = useState<number>(0);
     const [drone_positionX, setPositionX] = useState<number>(0);
     const [drone_positionY, setPositionY] = useState<number>(0);
+    const [magazine, setMagazine] = useState(["a","b","c","d","e"]);
 
     const rotUP = () => {
         let i = 0;
@@ -253,7 +254,12 @@ const Drone = () => {
 
     return ( 
         <>
-        <Bullet drone_positionX={drone_positionX} drone_positionY={drone_positionY} drone_rotationUD={drone_rotationUD} />
+        {
+            magazine.map((b,i)=>
+            <Bullet key={i} drone_positionX={drone_positionX} drone_positionY={drone_positionY} drone_rotationUD={drone_rotationUD} />
+            )
+        }
+
         <group rotation={[drone_rotationUD,drone_rotationRL,0]} position={[drone_positionX,drone_positionY,0]} scale={0.3}>
             {/* center anchor */}
 {/*             <mesh>
