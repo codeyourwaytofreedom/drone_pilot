@@ -62,7 +62,6 @@ const Drone = () => {
     const [drone_rotationRL, setRot_RL] = useState<number>(0);
     const [drone_positionX, setPositionX] = useState<number>(0);
     const [drone_positionY, setPositionY] = useState<number>(0);
-    const [magazine, setMagazine] = useState(["a","b","c","d","e"]);
 
     const rotUP = () => {
         let i = 0;
@@ -154,6 +153,8 @@ const Drone = () => {
           i++;
         }, 10); 
     }
+
+    const fire = () => setTriggered(true);
     
     
     useEffect(() => {
@@ -201,6 +202,13 @@ const Drone = () => {
             moves()
         }
     };
+    const shoot = (e:any) => {
+        if(e.which === 32)
+        {
+            console.log("backspace clicked")
+            fire();
+        }
+    }
 
     const handleKeyUp = (e:any) => {
         delete keysDown[e.key];
@@ -209,6 +217,7 @@ const Drone = () => {
     // Add event listeners for keydown and keyup events
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("keydown", shoot)
 
     return () => {
         window.removeEventListener('keydown', handleKeyDown);
@@ -217,7 +226,22 @@ const Drone = () => {
     }, []);    
     
 
-
+    useFrame(()=>{
+        if(bullet.current && triggered){    
+            const speed = 3.8; // adjust this to control the speed of movement
+            const direction = new THREE.Vector3(0, -drone_rotationUD, 0); // initial direction vector 
+            const rotation = bullet.current.rotation.clone(); // get the object's rotation
+            direction.applyEuler(rotation); // rotate the direction vector to match the object's rotation
+            const delta = direction.multiplyScalar(speed); // calculate the movement delta
+            bullet.current.position.add(delta); // update the object's position
+            //console.log(triggered)
+            //console.log(bullet.current.position.z)
+            if(bullet.current.position.z < -50){
+                setTriggered(false)
+            }
+        }
+    })
+    
     const [shapes, setShapes] = useState<svg_shape[]>([]);
     const[body,setBody] = useState<svg_shape[]>([]);
     const [excluded,setExcluded] = useState<number[]>([0,3]);
@@ -225,6 +249,9 @@ const Drone = () => {
     const propeller2 = useRef<Group>(null);
     const propeller3 = useRef<Group>(null);
     const propeller4 = useRef<Group>(null);
+
+    const bullet = useRef<Group>(null);
+    const [triggered, setTriggered] = useState<boolean>(false);
 
     const texture = useLoader(TextureLoader, '/cam1.jpg');
     texture.wrapS = RepeatWrapping
@@ -255,9 +282,14 @@ const Drone = () => {
     return ( 
         <>
         {
-            magazine.map((b,i)=>
-            <Bullet key={i} drone_positionX={drone_positionX} drone_positionY={drone_positionY} drone_rotationUD={drone_rotationUD} />
-            )
+        triggered &&        
+        
+        <group position={[drone_positionX,drone_positionY,0]} ref={triggered ? bullet : null} scale={0.4} rotation={[drone_rotationUD,0,0]}>
+        <mesh>
+            <cylinderGeometry args={[0.1,0.3,2]}/>
+            <meshBasicMaterial color={"black"}/>
+        </mesh>         
+        </group>   
         }
 
         <group rotation={[drone_rotationUD,drone_rotationRL,0]} position={[drone_positionX,drone_positionY,0]} scale={0.3}>
