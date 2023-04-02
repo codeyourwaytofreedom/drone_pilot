@@ -162,6 +162,7 @@ const Drone = () => {
     const keysDown: { [key: string]: boolean } = {};
     const handleKeyDown = (e:any) => {
         keysDown[e.key] = true;
+        keysDown[e.which] = true;
         // Key combinations for rotations
         const moves = () => {
             if(keysDown["w"]){
@@ -198,17 +199,13 @@ const Drone = () => {
             rotLeft();
             moves();
         } 
+        else if(keysDown["32"]){
+            fire(); 
+        }
         else{
             moves()
         }
     };
-    const shoot = (e:any) => {
-        if(e.which === 32)
-        {
-            console.log("backspace clicked")
-            fire();
-        }
-    }
 
     const handleKeyUp = (e:any) => {
         delete keysDown[e.key];
@@ -217,7 +214,6 @@ const Drone = () => {
     // Add event listeners for keydown and keyup events
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
-    window.addEventListener("keydown", shoot)
 
     return () => {
         window.removeEventListener('keydown', handleKeyDown);
