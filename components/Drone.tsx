@@ -221,7 +221,7 @@ const Drone = () => {
     };
     }, []);    
     
-
+    const [tocuhed, setTouched] = useState(false);
     useFrame(()=>{
         if(bullet.current && triggered){    
             const speed = 1.3; // adjust this to control the speed of movement
@@ -232,6 +232,13 @@ const Drone = () => {
             bullet.current.position.add(delta); // update the object's position
             //console.log(triggered)
             //console.log(bullet.current.position.z)
+            if(box1.current){
+                var sphere1Bounding = new THREE.Box3().setFromObject(box1.current);
+                var sphere2Bounding = new THREE.Box3().setFromObject(bullet.current);
+                var collision = sphere1Bounding.intersectsBox(sphere2Bounding);
+                console.log(collision)
+                if(collision){setTouched(true)}
+            }
             if(bullet.current.position.z < -30){
                 setTriggered(false)
             }
@@ -284,16 +291,8 @@ const Drone = () => {
         }
     }) */
     const box1 = useRef<Mesh>(null);
-    const box2 = useRef<Mesh>(null);
-    const [intersected, setIntersected] = useState(false);
-    useEffect(()=>{
-        if(box1.current && box2.current ){
-            var sphere1Bounding = new THREE.Box3().setFromObject(box1.current);
-            var sphere2Bounding = new THREE.Box3().setFromObject(box2.current);
-            var collision = sphere1Bounding.intersectsBox(sphere2Bounding);
-            console.log(collision)
-        }
-    },[])
+
+
     return ( 
         <>
         {
@@ -307,13 +306,9 @@ const Drone = () => {
         </group>   
         }
 
-        <mesh position={[2,2,-10]} ref={box1}>
+        <mesh position={[lastX.current, 0.5,-5]} ref={box1}>
             <boxGeometry args={[1,1,1]} />
-            <meshBasicMaterial color={"green"} />
-        </mesh>
-        <mesh position={[2,3.05,-10]} ref={box2}>
-            <boxGeometry args={[1,1,1]} />
-            <meshBasicMaterial color={"pink"} />
+            <meshBasicMaterial color={tocuhed ? "crimson" : "green"} />
         </mesh>
 
         <group rotation={[drone_rotationUD,0,drone_rotationRL]} position={[drone_positionX,drone_positionY,0]} scale={0.3}>
