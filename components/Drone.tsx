@@ -63,6 +63,8 @@ const Drone = () => {
     const [drone_positionX, setPositionX] = useState<number>(0);
     const [drone_positionY, setPositionY] = useState<number>(0);
 
+    const [lastPosX, setLastPosX] = useState<number>(0);
+
     const rotUP = () => {
         let i = 0;
         const interval_rot = setInterval(() => {
@@ -153,8 +155,7 @@ const Drone = () => {
           i++;
         }, 10); 
     }
-
-    const fire = () => setTriggered(true);
+    const fire = () => {setTriggered(t => !t);}
     
     
     useEffect(() => {
@@ -200,7 +201,10 @@ const Drone = () => {
             moves();
         } 
         else if(keysDown["32"]){
+            setLastPosX(drone_positionX);
             fire(); 
+            moves();
+
         }
         else{
             moves()
@@ -209,6 +213,7 @@ const Drone = () => {
 
     const handleKeyUp = (e:any) => {
         delete keysDown[e.key];
+        delete keysDown[e.which];
     };
 
     // Add event listeners for keydown and keyup events
@@ -224,7 +229,7 @@ const Drone = () => {
 
     useFrame(()=>{
         if(bullet.current && triggered){    
-            const speed = 3.8; // adjust this to control the speed of movement
+            const speed = 1.8; // adjust this to control the speed of movement
             const direction = new THREE.Vector3(0, -drone_rotationUD, 0); // initial direction vector 
             const rotation = bullet.current.rotation.clone(); // get the object's rotation
             direction.applyEuler(rotation); // rotate the direction vector to match the object's rotation
@@ -237,7 +242,7 @@ const Drone = () => {
             }
         }
     })
-    
+
     const [shapes, setShapes] = useState<svg_shape[]>([]);
     const[body,setBody] = useState<svg_shape[]>([]);
     const [excluded,setExcluded] = useState<number[]>([0,3]);
@@ -280,7 +285,7 @@ const Drone = () => {
         {
         triggered &&        
         
-        <group position={[drone_positionX,drone_positionY,0]} ref={triggered ? bullet : null} scale={0.4} rotation={[drone_rotationUD,0,0]}>
+        <group position={[0, 0,0]} ref={triggered ? bullet : null} scale={0.4} rotation={[drone_rotationUD,0,0]}>
         <mesh>
             <cylinderGeometry args={[0.1,0.3,2]}/>
             <meshBasicMaterial color={"black"}/>
