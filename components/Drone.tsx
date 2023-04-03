@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
-import { Group, Shape, Vector3 } from "three";
+import { Group, Mesh, Shape, Vector3 } from "three";
 import { Color } from "three";
 import { useFrame } from '@react-three/fiber';
 import * as THREE from "three";
@@ -19,7 +19,7 @@ const extrudeSettings = { depth: 8, bevelEnabled: true, bevelSegments: 9, steps:
 const extrudeSettings_Body = { depth: 25, bevelEnabled: true, bevelSegments: 9, steps: 9, bevelSize: 1, bevelThickness: 5 };
 
 const full_circle = 3.141;
-const rotation_speed = 1;
+const rotation_speed = 1.4;
 const propeller_scale = 0.005;
 const body_scale = 0.025;
 const propeller_pos = Math.PI/1.7;
@@ -232,7 +232,7 @@ const Drone = () => {
             bullet.current.position.add(delta); // update the object's position
             //console.log(triggered)
             //console.log(bullet.current.position.z)
-            if(bullet.current.position.z < -50){
+            if(bullet.current.position.z < -30){
                 setTriggered(false)
             }
         }
@@ -268,7 +268,7 @@ const Drone = () => {
     p.wrapS = RepeatWrapping;
     p.repeat.set(0.3,0.3)
 
-    useFrame(()=>{
+/*     useFrame(()=>{
         if(propeller1.current){
             propeller1.current.rotation.z -= rotation_speed;
         }        
@@ -282,8 +282,18 @@ const Drone = () => {
         if(propeller2.current){
             propeller2.current.rotation.z += rotation_speed;
         }
-    })
-
+    }) */
+    const box1 = useRef<Mesh>(null);
+    const box2 = useRef<Mesh>(null);
+    const [intersected, setIntersected] = useState(false);
+    useEffect(()=>{
+        if(box1.current && box2.current ){
+            var sphere1Bounding = new THREE.Box3().setFromObject(box1.current);
+            var sphere2Bounding = new THREE.Box3().setFromObject(box2.current);
+            var collision = sphere1Bounding.intersectsBox(sphere2Bounding);
+            console.log(collision)
+        }
+    },[])
     return ( 
         <>
         {
@@ -291,11 +301,20 @@ const Drone = () => {
         
         <group position={[lastX.current, lastY.current,0]} ref={bullet} scale={0.4} rotation={[drone_rotationUD,0,drone_rotationRL]}>
         <mesh>
-            <cylinderGeometry args={[0.1,0.3,2]}/>
-            <meshBasicMaterial color={"black"}/>
+            <cylinderGeometry args={[0.1,0.2,1]}/>
+            <meshBasicMaterial color={"yellow"}/>
         </mesh>         
         </group>   
         }
+
+        <mesh position={[2,2,-10]} ref={box1}>
+            <boxGeometry args={[1,1,1]} />
+            <meshBasicMaterial color={"green"} />
+        </mesh>
+        <mesh position={[2,3.05,-10]} ref={box2}>
+            <boxGeometry args={[1,1,1]} />
+            <meshBasicMaterial color={"pink"} />
+        </mesh>
 
         <group rotation={[drone_rotationUD,0,drone_rotationRL]} position={[drone_positionX,drone_positionY,0]} scale={0.3}>
             {/* center anchor */}
