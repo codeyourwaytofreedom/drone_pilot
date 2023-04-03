@@ -268,7 +268,7 @@ const Drone = () => {
     p.wrapS = RepeatWrapping;
     p.repeat.set(0.3,0.3)
 
-/*     useFrame(()=>{
+    useFrame(()=>{
         if(propeller1.current){
             propeller1.current.rotation.z -= rotation_speed;
         }        
@@ -282,7 +282,7 @@ const Drone = () => {
         if(propeller2.current){
             propeller2.current.rotation.z += rotation_speed;
         }
-    }) */
+    })
 
     return ( 
         <>
