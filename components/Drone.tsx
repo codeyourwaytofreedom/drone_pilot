@@ -27,7 +27,7 @@ const center_color = "#D2691E";
 const pole_color = "black";
 const propeller_color = "#1E90FF"
 const angle_change = 0.05;
-const distance_change = 0.2;
+const distance_change = 0.3;
 const max_angle_UP = -2;
 const min_angle_UD = -0.8;
 const max_angle_RL = 1;
@@ -63,7 +63,6 @@ const Drone = () => {
     const [drone_positionX, setPositionX] = useState<number>(0);
     const [drone_positionY, setPositionY] = useState<number>(0);
 
-    const [lastPosX, setLastPosX] = useState<number>(0);
 
     const rotUP = () => {
         let i = 0;
@@ -157,7 +156,6 @@ const Drone = () => {
     }
     const fire = () => {setTriggered(t => !t);}
     
-    
     useEffect(() => {
     // Keep track of which keys are currently pressed down
     const keysDown: { [key: string]: boolean } = {};
@@ -179,7 +177,6 @@ const Drone = () => {
                 moveRight();
             }
         }
-
         if (keysDown["ArrowUp"]) {
             rotUP();
             if(keysDown["ArrowRight"]){rotRight();}
@@ -201,19 +198,17 @@ const Drone = () => {
             moves();
         } 
         else if(keysDown["32"]){
-            setLastPosX(drone_positionX);
             fire(); 
-            moves();
-
+            moves(); 
         }
         else{
-            moves()
+            moves();
         }
     };
 
     const handleKeyUp = (e:any) => {
         delete keysDown[e.key];
-        delete keysDown[e.which];
+        delete keysDown[e.which];        
     };
 
     // Add event listeners for keydown and keyup events
@@ -229,7 +224,7 @@ const Drone = () => {
 
     useFrame(()=>{
         if(bullet.current && triggered){    
-            const speed = 1.8; // adjust this to control the speed of movement
+            const speed = 1.3; // adjust this to control the speed of movement
             const direction = new THREE.Vector3(0, -drone_rotationUD, 0); // initial direction vector 
             const rotation = bullet.current.rotation.clone(); // get the object's rotation
             direction.applyEuler(rotation); // rotate the direction vector to match the object's rotation
@@ -251,8 +246,17 @@ const Drone = () => {
     const propeller3 = useRef<Group>(null);
     const propeller4 = useRef<Group>(null);
 
+
     const bullet = useRef<Group>(null);
     const [triggered, setTriggered] = useState<boolean>(false);
+
+    const lastX = useRef(drone_positionX);
+    const lastY = useRef(drone_positionY);
+
+    useEffect(() => {
+        lastX.current = drone_positionX;
+        lastY.current = drone_positionY;
+      }, [triggered]);
 
     const texture = useLoader(TextureLoader, '/cam1.jpg');
     texture.wrapS = RepeatWrapping
@@ -285,7 +289,7 @@ const Drone = () => {
         {
         triggered &&        
         
-        <group position={[0, 0,0]} ref={triggered ? bullet : null} scale={0.4} rotation={[drone_rotationUD,0,0]}>
+        <group position={[lastX.current, lastY.current,0]} ref={bullet} scale={0.4} rotation={[drone_rotationUD,0,drone_rotationRL]}>
         <mesh>
             <cylinderGeometry args={[0.1,0.3,2]}/>
             <meshBasicMaterial color={"black"}/>
@@ -293,7 +297,7 @@ const Drone = () => {
         </group>   
         }
 
-        <group rotation={[drone_rotationUD,drone_rotationRL,0]} position={[drone_positionX,drone_positionY,0]} scale={0.3}>
+        <group rotation={[drone_rotationUD,0,drone_rotationRL]} position={[drone_positionX,drone_positionY,0]} scale={0.3}>
             {/* center anchor */}
 {/*             <mesh>
                 <boxGeometry args={[0.2,0.2,2]}/>

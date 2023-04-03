@@ -31,7 +31,7 @@ const Bullet:NextPage<rot_mov> = ({drone_positionX, drone_positionY,drone_rotati
     },[])
     useFrame(()=>{
         if(bullet.current && triggered){    
-            const speed = 3.8; // adjust this to control the speed of movement
+            const speed = 4.8; // adjust this to control the speed of movement
             const direction = new THREE.Vector3(0, -drone_rotationUD, 0); // initial direction vector 
             const rotation = bullet.current.rotation.clone(); // get the object's rotation
             direction.applyEuler(rotation); // rotate the direction vector to match the object's rotation
