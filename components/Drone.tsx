@@ -200,6 +200,7 @@ const Drone = () => {
         else if(keysDown["32"]){
             fire(); 
             moves(); 
+            shot.play();
         }
         else{
             moves();
@@ -228,6 +229,7 @@ const Drone = () => {
         3,
         -15)      
     )
+    const shot = new Audio('gunshot.mp3');
     
       
     useFrame(()=>{
@@ -245,7 +247,14 @@ const Drone = () => {
                 var sphere2Bounding = new THREE.Box3().setFromObject(bullet.current);
                 var collision = sphere1Bounding.intersectsBox(sphere2Bounding);
                 console.log(collision)
-                if(collision){setTouched(true); setTriggered(false)}
+                if(collision){
+                    setTouched(true); 
+                    setTriggered(false);
+                    setTargetPos(        new THREE.Vector3(
+                        Math.random() * 18 - 9,
+                        3,
+                        -15) )
+                }
                 setTimeout(() => {
                     setTouched(false)
                 }, 2000);
