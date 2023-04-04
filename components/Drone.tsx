@@ -222,6 +222,14 @@ const Drone = () => {
     }, []);    
     
     const [tocuhed, setTouched] = useState(false);
+    const [target_pos, setTargetPos] = useState(
+        new THREE.Vector3(
+        Math.random() * 18 - 9,
+        3,
+        -15)      
+    )
+    
+      
     useFrame(()=>{
         if(bullet.current && triggered){    
             const speed = 1.3; // adjust this to control the speed of movement
@@ -237,7 +245,10 @@ const Drone = () => {
                 var sphere2Bounding = new THREE.Box3().setFromObject(bullet.current);
                 var collision = sphere1Bounding.intersectsBox(sphere2Bounding);
                 console.log(collision)
-                if(collision){setTouched(true)}
+                if(collision){setTouched(true); setTriggered(false)}
+                setTimeout(() => {
+                    setTouched(false)
+                }, 2000);
             }
             if(bullet.current.position.z < -30){
                 setTriggered(false)
@@ -305,11 +316,15 @@ const Drone = () => {
         </mesh>         
         </group>   
         }
+        {
+            !tocuhed &&
+            <mesh position={target_pos} ref={box1}>
+                <boxGeometry args={[1,1,1]} />
+                <meshBasicMaterial color={"green"} />
+            </mesh>
+        }
 
-        <mesh position={[lastX.current, 0.5,-5]} ref={box1}>
-            <boxGeometry args={[1,1,1]} />
-            <meshBasicMaterial color={tocuhed ? "crimson" : "green"} />
-        </mesh>
+
 
         <group rotation={[drone_rotationUD,0,drone_rotationRL]} position={[drone_positionX,drone_positionY,0]} scale={0.3}>
             {/* center anchor */}
