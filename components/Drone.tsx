@@ -43,7 +43,6 @@ const drone_shape =  new THREE.Shape()
     .lineTo(20, 40)
     .quadraticCurveTo(0, 40, 0, 20);
 
-
 const Drone = () => {
     //set the 3D object from the loader
     useEffect(() => {
@@ -52,9 +51,9 @@ const Drone = () => {
             const newShapes = data.paths.map((shp) => ({shape:SVGLoader.createShapes(shp)[0],color:shp.color }));
             setShapes(newShapes);
         });
-        loader.load("/body.svg", function(data){
+        loader.load("/balloon.svg", function(data){
             const newShapes = data.paths.map((shp) => ({shape:SVGLoader.createShapes(shp)[0],color:shp.color }));
-            setBody(newShapes);
+            setBalloon(newShapes);
         });
     }, []);
 
@@ -223,14 +222,7 @@ const Drone = () => {
     }, []);    
     
     const [tocuhed, setTouched] = useState(false);
-    const [target_pos, setTargetPos] = useState(
-        new THREE.Vector3(
-        Math.random() * 18 - 9,
-        3,
-        -15)      
-    )
     const shot = new Audio('gunshot.mp3');
-    
       
     useFrame(()=>{
         if(bullet.current && triggered){    
@@ -242,18 +234,14 @@ const Drone = () => {
             bullet.current.position.add(delta); // update the object's position
             //console.log(triggered)
             //console.log(bullet.current.position.z)
-            if(box1.current){
-                var sphere1Bounding = new THREE.Box3().setFromObject(box1.current);
+            if(bal.current){
+                var sphere1Bounding = new THREE.Box3().setFromObject(bal.current);
                 var sphere2Bounding = new THREE.Box3().setFromObject(bullet.current);
                 var collision = sphere1Bounding.intersectsBox(sphere2Bounding);
                 console.log(collision)
                 if(collision){
                     setTouched(true); 
                     setTriggered(false);
-                    setTargetPos(        new THREE.Vector3(
-                        Math.random() * 18 - 9,
-                        3,
-                        -15) )
                 }
                 setTimeout(() => {
                     setTouched(false)
@@ -266,7 +254,7 @@ const Drone = () => {
     })
 
     const [shapes, setShapes] = useState<svg_shape[]>([]);
-    const[body,setBody] = useState<svg_shape[]>([]);
+    const[balloon,setBalloon] = useState<svg_shape[]>([]);
     const [excluded,setExcluded] = useState<number[]>([0,3]);
     const propeller1 = useRef<Group>(null);
     const propeller2 = useRef<Group>(null);
@@ -310,11 +298,37 @@ const Drone = () => {
             propeller2.current.rotation.z += rotation_speed;
         }
     }) */
-    const box1 = useRef<Mesh>(null);
-
+    const bal = useRef<Mesh>(null);
+    const bal_holder = useRef<Group>(null);
+/*     useFrame(()=>{
+        if(bal_holder.current){
+            bal_holder.current.position.x += 0.01;
+        }
+    }) */
 
     return ( 
         <>
+        {
+            !tocuhed &&
+            <>
+            <group position={[0,1,-2]} scale={0.5} ref={bal_holder}>
+                
+                {balloon.map((s,i) => i !== 16 &&
+                    <mesh key={i} scale={propeller_scale} rotation-x={Math.PI}>
+                        <extrudeGeometry args={[s.shape,extrudeSettings]} />
+                        <meshBasicMaterial color={s.color}/>
+                    </mesh>
+                )}
+                <mesh position={[1,-1,0]} ref={bal}>
+                    <sphereGeometry args={[1,32,32]}/>
+                    <meshBasicMaterial color={"red"}/>
+                </mesh>
+            </group>
+            </>
+        }
+
+
+
         {
         triggered &&        
         
@@ -325,15 +339,6 @@ const Drone = () => {
         </mesh>         
         </group>   
         }
-        {
-            !tocuhed &&
-            <mesh position={target_pos} ref={box1}>
-                <boxGeometry args={[1,1,1]} />
-                <meshBasicMaterial color={"green"} />
-            </mesh>
-        }
-
-
 
         <group rotation={[drone_rotationUD,0,drone_rotationRL]} position={[drone_positionX,drone_positionY,0]} scale={0.3}>
             {/* center anchor */}
