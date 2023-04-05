@@ -252,6 +252,28 @@ const Drone:NextPage<pm> = ({promo, setProm}) => {
                     setProm(1);
                 }
             }
+            if(promo2.current){
+                var sphere1Bounding = new THREE.Box3().setFromObject(promo2.current);
+                var sphere2Bounding = new THREE.Box3().setFromObject(bullet.current);
+                var collision = sphere1Bounding.intersectsBox(sphere2Bounding);
+
+                if(collision){
+                    setTouched(t => !t); 
+                    setTriggered(false);
+                    setProm(2);
+                }
+            }
+            if(promo3.current){
+                var sphere1Bounding = new THREE.Box3().setFromObject(promo3.current);
+                var sphere2Bounding = new THREE.Box3().setFromObject(bullet.current);
+                var collision = sphere1Bounding.intersectsBox(sphere2Bounding);
+
+                if(collision){
+                    setTouched(t => !t); 
+                    setTriggered(false);
+                    setProm(3);
+                }
+            }
             if(bullet.current.position.z < -30){
                 setTriggered(false)
             }
@@ -304,13 +326,26 @@ const Drone:NextPage<pm> = ({promo, setProm}) => {
         }
     }) */
     const promo1 = useRef<Mesh>(null);
+    const promo2 = useRef<Mesh>(null);
+    const promo3 = useRef<Mesh>(null);
     return ( 
         <>
 
         <mesh position={[-0.1,3.7,-9]} ref={promo1}>
             <boxGeometry args={[2,2,2]}/>
-            <meshBasicMaterial color={tocuhed ? "green" : "red"} />
+            <meshBasicMaterial color={tocuhed ? "green" : "red"} transparent={true} opacity={0} />
         </mesh>
+
+        <mesh position={[-2.7,3.7,-9]} ref={promo2}>
+            <boxGeometry args={[2,2,2]}/>
+            <meshBasicMaterial color={tocuhed ? "blue" : "orange"} transparent={true} opacity={0}/>
+        </mesh>
+
+        <mesh position={[3.1,3.7,-9]} ref={promo3}>
+            <boxGeometry args={[2,2,2]}/>
+            <meshBasicMaterial color={tocuhed ? "yellow" : "pink"} transparent={true} opacity={0}/>
+        </mesh>
+
 
         {
         triggered &&        

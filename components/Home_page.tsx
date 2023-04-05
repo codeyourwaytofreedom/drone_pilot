@@ -29,6 +29,12 @@ const Home_page = () => {
     if(promo === 1){
       Router.push('https://www.amazon.com/s?k=gaming+headsets&pd_rd_r=983556e0-934d-4949-917c-7693d80294ea&pd_rd_w=PtdXk&pd_rd_wg=5I3em&pf_rd_p=12129333-2117-4490-9c17-6d31baf0582a&pf_rd_r=F1GA6VA748YKB95Y1GEJ&ref=pd_gw_unk');
     }
+    else if (promo === 2){
+      Router.push('https://www.hepsiburada.com/');
+    }
+    else if (promo === 3){
+      Router.push('https://www.ingilizceankara.com/');
+    }
   })
 
     return ( 
