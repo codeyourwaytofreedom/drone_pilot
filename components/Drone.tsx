@@ -332,17 +332,17 @@ const Drone:NextPage<pm> = ({promo, setProm}) => {
         <>
 
         <mesh position={[-0.1,3.7,-9]} ref={promo1}>
-            <boxGeometry args={[2,2,2]}/>
+        <sphereGeometry args={[1.6,32,32]}/>
             <meshBasicMaterial color={tocuhed ? "green" : "red"} transparent={true} opacity={0} />
         </mesh>
 
-        <mesh position={[-2.7,3.7,-9]} ref={promo2}>
-            <boxGeometry args={[2,2,2]}/>
+        <mesh position={[-3.7,4.7,-12]} ref={promo2}>
+        <sphereGeometry args={[1.6,32,32]}/>
             <meshBasicMaterial color={tocuhed ? "blue" : "orange"} transparent={true} opacity={0}/>
         </mesh>
 
-        <mesh position={[3.1,3.7,-9]} ref={promo3}>
-            <boxGeometry args={[2,2,2]}/>
+        <mesh position={[3.7,4.7,-12]} ref={promo3}>
+            <sphereGeometry args={[1.6,32,32]}/>
             <meshBasicMaterial color={tocuhed ? "yellow" : "pink"} transparent={true} opacity={0}/>
         </mesh>
 

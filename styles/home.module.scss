@@ -15,8 +15,9 @@
         button{
             padding: 30px;
             background-color: black;
-            border: 2px solid white;
             color: white;
+            border: none;
+            box-shadow: inset 0px 2px purple;
         }
     }
 }
