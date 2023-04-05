@@ -3,4 +3,20 @@
     background-image: url("../public/galaxy.jpg");
     background-repeat: no-repeat;
     background-size: cover;
+    position: relative;
+    display: grid;
+    justify-items: center;
+    &_menu{
+        position: absolute;
+        display: flex;
+        column-gap: 20px;
+        justify-self: center;
+        top:200px;
+        button{
+            padding: 30px;
+            background-color: black;
+            border: 2px solid white;
+            color: white;
+        }
+    }
 }

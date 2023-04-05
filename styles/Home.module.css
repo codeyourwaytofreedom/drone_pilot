@@ -3,4 +3,21 @@
   background-image: url("../public/galaxy.jpg");
   background-repeat: no-repeat;
   background-size: cover;
+  position: relative;
+  display: grid;
+  justify-items: center;
+}
+.home_menu {
+  position: absolute;
+  display: flex;
+  -moz-column-gap: 20px;
+       column-gap: 20px;
+  justify-self: center;
+  top: 200px;
+}
+.home_menu button {
+  padding: 30px;
+  background-color: black;
+  border: 2px solid white;
+  color: white;
 }/*# sourceMappingURL=Home.module.css.map */

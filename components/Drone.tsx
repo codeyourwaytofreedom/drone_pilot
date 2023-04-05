@@ -9,6 +9,7 @@ import { TextureLoader } from 'three/src/loaders/TextureLoader'
 import { RepeatWrapping } from 'three'
 import { setInterval } from 'timers';
 import Bullet from './bullet';
+import { NextPage } from 'next';
 
 type svg_shape = {
     shape:Shape;
@@ -34,6 +35,7 @@ const max_angle_RL = 1;
 const min_angle_RL = -1;
 const smoothness = 50;
 
+
 const drone_shape =  new THREE.Shape()
     .moveTo(0, 20)
     .quadraticCurveTo(0, 0, 20, 0)
@@ -43,7 +45,12 @@ const drone_shape =  new THREE.Shape()
     .lineTo(20, 40)
     .quadraticCurveTo(0, 40, 0, 20);
 
-const Drone = () => {
+interface pm {
+    promo:number;
+    setProm:React.Dispatch<React.SetStateAction<number>>;
+}
+
+const Drone:NextPage<pm> = ({promo, setProm}) => {
     //set the 3D object from the loader
     useEffect(() => {
         const loader = new SVGLoader();
@@ -223,7 +230,7 @@ const Drone = () => {
     
     const [tocuhed, setTouched] = useState(false);
     const shot = new Audio('gunshot.mp3');
-      
+
     useFrame(()=>{
         if(bullet.current && triggered){    
             const speed = 1.3; // adjust this to control the speed of movement
@@ -234,18 +241,16 @@ const Drone = () => {
             bullet.current.position.add(delta); // update the object's position
             //console.log(triggered)
             //console.log(bullet.current.position.z)
-            if(bal.current){
-                var sphere1Bounding = new THREE.Box3().setFromObject(bal.current);
+            if(promo1.current){
+                var sphere1Bounding = new THREE.Box3().setFromObject(promo1.current);
                 var sphere2Bounding = new THREE.Box3().setFromObject(bullet.current);
                 var collision = sphere1Bounding.intersectsBox(sphere2Bounding);
                 console.log(collision)
                 if(collision){
-                    setTouched(true); 
+                    setTouched(t => !t); 
                     setTriggered(false);
+                    setProm(1);
                 }
-                setTimeout(() => {
-                    setTouched(false)
-                }, 2000);
             }
             if(bullet.current.position.z < -30){
                 setTriggered(false)
@@ -298,36 +303,14 @@ const Drone = () => {
             propeller2.current.rotation.z += rotation_speed;
         }
     }) */
-    const bal = useRef<Mesh>(null);
-    const bal_holder = useRef<Group>(null);
-/*     useFrame(()=>{
-        if(bal_holder.current){
-            bal_holder.current.position.x += 0.01;
-        }
-    }) */
-
+    const promo1 = useRef<Mesh>(null);
     return ( 
         <>
-        {
-            !tocuhed &&
-            <>
-            <group position={[0,1,-2]} scale={0.5} ref={bal_holder}>
-                
-                {balloon.map((s,i) => i !== 16 &&
-                    <mesh key={i} scale={propeller_scale} rotation-x={Math.PI}>
-                        <extrudeGeometry args={[s.shape,extrudeSettings]} />
-                        <meshBasicMaterial color={s.color}/>
-                    </mesh>
-                )}
-                <mesh position={[1,-1,0]} ref={bal}>
-                    <sphereGeometry args={[1,32,32]}/>
-                    <meshBasicMaterial color={"red"}/>
-                </mesh>
-            </group>
-            </>
-        }
 
-
+        <mesh position={[-0.1,3.7,-9]} ref={promo1}>
+            <boxGeometry args={[2,2,2]}/>
+            <meshBasicMaterial color={tocuhed ? "green" : "red"} />
+        </mesh>
 
         {
         triggered &&        
